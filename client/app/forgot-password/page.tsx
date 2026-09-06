@@ -1,0 +1,1 @@
+export default function ForgotPassword(){return <main className="grid min-h-screen place-items-center"><div className="rounded-2xl border border-slate-800 bg-[#111827] p-7"><h1 className="text-2xl font-bold">Forgot password</h1><p className="mt-3 text-slate-400">Password reset email delivery is not enabled in this initial runnable build.</p></div></main>}

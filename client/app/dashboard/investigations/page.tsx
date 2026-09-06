@@ -1,0 +1,4 @@
+"use client";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/lib/api";
+export default function Investigations(){const {data,isLoading}=useQuery({queryKey:["investigations"],queryFn:async()=>(await api.get("/investigations")).data.data});return <main className="p-6"><h1 className="text-3xl font-bold">Investigations</h1><div className="mt-6 space-y-3">{isLoading?<p>Loading...</p>:data?.map((x:any)=><div key={x._id} className="rounded-xl border border-slate-800 bg-[#111827] p-5"><div className="flex justify-between"><b>{x.status}</b><span className="text-slate-400">{new Date(x.createdAt).toLocaleString()}</span></div><p className="mt-2 text-slate-400">Account: {x.accountId?.username || x.accountId}</p><p className="mt-2">{x.decision || "No decision yet"}</p></div>)}</div></main>}

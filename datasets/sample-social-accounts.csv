@@ -1,0 +1,11 @@
+platform,username,followers,following,posts,accountAgeDays,hasProfilePicture,hasBio,hasWebsite,isVerified,averageLikes,averageComments,averageShares,postsPerDay,engagementRate,duplicateContentRatio,activeHours,repetitiveContentScore,networkScore
+X,synthetic_bot_01,8,1200,800,12,false,false,false,false,1,0,0,70,0.1,0.95,23,95,90
+Instagram,synthetic_user_02,2400,500,350,700,true,true,true,false,90,8,3,2,4.2,0.03,8,10,15
+TikTok,synthetic_bot_03,25,950,1200,20,false,false,false,false,2,0,0,60,0.2,0.9,22,88,85
+Facebook,synthetic_user_04,800,300,180,500,true,true,false,false,40,4,1,2,3.1,0.08,7,15,20
+X,synthetic_bot_05,40,1400,1000,8,false,false,false,false,1,0,0,80,0.05,0.98,24,99,95
+Instagram,synthetic_user_06,1500,450,220,900,true,true,true,true,80,6,2,1.5,5.0,0.02,9,8,10
+TikTok,synthetic_user_07,300,800,600,60,true,false,false,false,12,1,0,15,0.8,0.4,18,55,60
+Facebook,synthetic_user_08,5200,900,700,1200,true,true,true,false,210,15,7,3,4.8,0.01,10,5,12
+X,synthetic_bot_09,15,1000,950,18,false,false,false,false,1,0,0,55,0.1,0.92,23,92,87
+Instagram,synthetic_user_10,950,250,150,430,true,true,true,false,55,5,2,1.2,4.1,0.04,8,12,18

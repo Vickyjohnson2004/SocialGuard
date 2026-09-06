@@ -1,0 +1,1 @@
+export default function AdminUsers(){return <main className="p-6"><h1 className="text-3xl font-bold">User Administration</h1><p className="mt-2 text-slate-400">Extend this screen with protected user management endpoints.</p></main>}

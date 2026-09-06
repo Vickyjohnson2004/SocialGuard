@@ -1,0 +1,1 @@
+export default function ResetPassword(){return <main className="grid min-h-screen place-items-center"><div className="rounded-2xl border border-slate-800 bg-[#111827] p-7"><h1 className="text-2xl font-bold">Reset password</h1><p className="mt-3 text-slate-400">Connect your email provider and reset-token flow here for production.</p></div></main>}

@@ -1,0 +1,1 @@
+export default function Reports(){return <main className="p-6"><h1 className="text-3xl font-bold">Reports</h1><div className="mt-6 rounded-2xl border border-slate-800 bg-[#111827] p-6"><p className="text-slate-400">Report generation is intentionally kept data-driven. Use the analysis records to generate PDF/CSV exports in the next extension phase.</p></div></main>}
