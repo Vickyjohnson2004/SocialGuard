@@ -6,10 +6,12 @@ import { signAccessToken, signRefreshToken, verifyRefresh } from "../utils/jwt";
 import { loginSchema, registerSchema } from "../validators/auth";
 import { ok } from "../utils/api";
 
+const cookieSameSite: "none" | "lax" = env.COOKIE_SECURE ? "none" : "lax";
+
 const cookieBase = {
   httpOnly: true,
   secure: env.COOKIE_SECURE,
-  sameSite: (env.COOKIE_SECURE ? "none" : "lax") as const,
+  sameSite: cookieSameSite,
   path: "/",
 };
 
@@ -17,13 +19,11 @@ export async function register(req: Request, res: Response) {
   const body = registerSchema.parse(req.body);
   const exists = await User.findOne({ email: body.email.toLowerCase() });
   if (exists)
-    return res
-      .status(409)
-      .json({
-        success: false,
-        message: "Email already registered",
-        errors: [],
-      });
+    return res.status(409).json({
+      success: false,
+      message: "Email already registered",
+      errors: [],
+    });
 
   const passwordHash = await bcrypt.hash(body.password, 12);
   const user = await User.create({
@@ -59,13 +59,11 @@ export async function login(req: Request, res: Response) {
   const body = loginSchema.parse(req.body);
   const user = await User.findOne({ email: body.email.toLowerCase() });
   if (!user || !(await bcrypt.compare(body.password, user.passwordHash))) {
-    return res
-      .status(401)
-      .json({
-        success: false,
-        message: "Invalid email or password",
-        errors: [],
-      });
+    return res.status(401).json({
+      success: false,
+      message: "Invalid email or password",
+      errors: [],
+    });
   }
   const access = signAccessToken(user.id, user.role);
   const refresh = signRefreshToken(user.id, user.role);
@@ -92,13 +90,11 @@ export async function refresh(req: Request, res: Response) {
   try {
     const token = req.cookies?.refreshToken;
     if (!token)
-      return res
-        .status(401)
-        .json({
-          success: false,
-          message: "Refresh token required",
-          errors: [],
-        });
+      return res.status(401).json({
+        success: false,
+        message: "Refresh token required",
+        errors: [],
+      });
     const payload = verifyRefresh(token);
     const user = await User.findById(payload.sub);
     if (!user) throw new Error("not found");
