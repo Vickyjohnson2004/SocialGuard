@@ -12,7 +12,7 @@ services:
     environment:
       NODE_ENV: development
       PORT: 5000
-      MONGO_URI: mongodb://mongo:27017/socialguard
+      DB_URL: mongodb://mongo:27017/socialguard
       CLIENT_URL: http://localhost:3000
       JWT_ACCESS_SECRET: change-this-access-secret
       JWT_REFRESH_SECRET: change-this-refresh-secret

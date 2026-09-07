@@ -54,7 +54,7 @@ Set these variables on the backend deployment:
 NODE_ENV=production
 CLIENT_URL=https://your-frontend-domain.vercel.app
 COOKIE_SECURE=true
-MONGO_URI=your-mongodb-connection-string
+DB_URL=your-mongodb-connection-string
 JWT_ACCESS_SECRET=your-long-access-secret
 JWT_REFRESH_SECRET=your-long-refresh-secret
 ```

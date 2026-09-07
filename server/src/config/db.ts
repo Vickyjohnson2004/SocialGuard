@@ -1,16 +1,15 @@
-import dns from "node:dns";
 import mongoose from "mongoose";
-import { env } from "./env";
+import { ENV } from "./env";
 
-export async function connectDB() {
-  if (env.MONGO_DNS_SERVERS) {
-    dns.setServers(
-      env.MONGO_DNS_SERVERS.split(",")
-        .map((server) => server.trim())
-        .filter(Boolean),
-    );
+export const connectDB = async () => {
+  try {
+    const conn = await mongoose.connect(ENV.DB_URL);
+    console.log(`Connected to MONGODB: ${conn.connection.host}`);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error("MONGODB connection error:", message);
+    process.exit(1);
   }
+};
 
-  await mongoose.connect(env.MONGO_URI);
-  console.log("MongoDB connected");
-}
+export default connectDB;
