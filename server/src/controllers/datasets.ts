@@ -2,7 +2,32 @@ import { Request, Response } from "express";
 import { SocialAccount } from "../models/SocialAccount";
 import { Analysis } from "../models/Analysis";
 import { detect } from "../detection/rules";
+import { accountSchema } from "../validators/account";
 import { ok } from "../utils/api";
+
+function parseCsvLine(line: string) {
+  const values: string[] = [];
+  let value = "";
+  let quoted = false;
+  for (let index = 0; index < line.length; index += 1) {
+    const character = line[index];
+    if (character === '"') {
+      if (quoted && line[index + 1] === '"') {
+        value += '"';
+        index += 1;
+      } else {
+        quoted = !quoted;
+      }
+    } else if (character === "," && !quoted) {
+      values.push(value.trim());
+      value = "";
+    } else {
+      value += character;
+    }
+  }
+  values.push(value.trim());
+  return values;
+}
 
 export async function uploadDataset(req: Request, res: Response) {
   if (!req.file)
@@ -10,28 +35,24 @@ export async function uploadDataset(req: Request, res: Response) {
       .status(400)
       .json({ success: false, message: "CSV file is required", errors: [] });
   if (!req.file.originalname.toLowerCase().endsWith(".csv")) {
-    return res
-      .status(400)
-      .json({
-        success: false,
-        message: "Only CSV files are accepted",
-        errors: [],
-      });
+    return res.status(400).json({
+      success: false,
+      message: "Only CSV files are accepted",
+      errors: [],
+    });
   }
 
-  const text = req.file.buffer.toString("utf8");
-  const lines = text.split(/\r?\n/).filter(Boolean);
+  const text = req.file.buffer.toString("utf8").replace(/^\uFEFF/, "");
+  const lines = text.split(/\r?\n/).filter((line) => line.trim());
   if (lines.length < 2 || lines.length > 5001) {
-    return res
-      .status(400)
-      .json({
-        success: false,
-        message: "CSV must contain 1-5000 data rows",
-        errors: [],
-      });
+    return res.status(400).json({
+      success: false,
+      message: "CSV must contain 1-5000 data rows",
+      errors: [],
+    });
   }
 
-  const headers = lines[0].split(",").map((x) => x.trim());
+  const headers = parseCsvLine(lines[0]);
   const required = [
     "platform",
     "username",
@@ -44,17 +65,15 @@ export async function uploadDataset(req: Request, res: Response) {
   ];
   const missing = required.filter((x) => !headers.includes(x));
   if (missing.length)
-    return res
-      .status(400)
-      .json({
-        success: false,
-        message: `Missing columns: ${missing.join(", ")}`,
-        errors: [],
-      });
+    return res.status(400).json({
+      success: false,
+      message: `Missing columns: ${missing.join(", ")}`,
+      errors: [],
+    });
 
-  const results = [];
-  for (const line of lines.slice(1)) {
-    const values = line.split(",");
+  const rows = [];
+  for (const [index, line] of lines.slice(1).entries()) {
+    const values = parseCsvLine(line);
     const row: any = {};
     headers.forEach((h, i) => (row[h] = values[i]?.trim()));
     const body = {
@@ -74,6 +93,22 @@ export async function uploadDataset(req: Request, res: Response) {
       hasWebsite: row.hasWebsite === "true",
       isVerified: row.isVerified === "true",
     };
+    const parsed = accountSchema.safeParse(body);
+    if (!parsed.success) {
+      const fields = parsed.error.issues
+        .map((issue) => issue.path.join(".") || "row")
+        .join(", ");
+      return res.status(400).json({
+        success: false,
+        message: `Invalid data on CSV row ${index + 2}: ${fields}`,
+        errors: parsed.error.issues,
+      });
+    }
+    rows.push(parsed.data);
+  }
+
+  const results = [];
+  for (const body of rows) {
     const account = await SocialAccount.create({
       ...body,
       createdBy: req.user!.id,
