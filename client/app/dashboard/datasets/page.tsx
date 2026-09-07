@@ -99,7 +99,7 @@ export default function Datasets() {
           and engagementRate.
         </p>
         <input
-          className="mt-5 block"
+          className="mt-5 block max-w-full text-sm"
           type="file"
           accept=".csv,text/csv"
           onChange={(e) => selectFile(e.target.files?.[0] || null)}
@@ -124,7 +124,7 @@ export default function Datasets() {
         )}
       </div>
       {results.length > 0 && (
-        <section className="mt-6 overflow-x-auto rounded-2xl border border-slate-800 bg-[#111827] p-6">
+        <section className="mt-6 overflow-x-auto rounded-2xl border border-slate-800 bg-[#111827] p-4 sm:p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-xl font-bold">Analysis Results</h2>
             <div className="flex flex-wrap gap-3 text-sm text-slate-400">
@@ -158,7 +158,7 @@ export default function Datasets() {
                   <td className="p-3 font-bold">{result.classification}</td>
                   <td className="p-3 text-[#F4A91C]">{result.riskScore}/100</td>
                   <td className="p-3">{result.confidence}%</td>
-                  <td className="p-3 text-slate-400">
+                  <td className="break-words p-3 text-slate-400">
                     {result.reasons.join(" ")}
                   </td>
                 </tr>

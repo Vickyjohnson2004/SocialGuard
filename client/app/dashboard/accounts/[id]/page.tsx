@@ -39,7 +39,9 @@ export default function AccountDetail() {
           </div>
           <ul className="mt-4 list-disc pl-5 text-slate-300">
             {analysis.reasons.map((reason: string) => (
-              <li key={reason}>{reason}</li>
+              <li key={reason} className="wrap-break-word">
+                {reason}
+              </li>
             ))}
           </ul>
         </div>

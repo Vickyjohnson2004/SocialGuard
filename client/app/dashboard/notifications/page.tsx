@@ -19,7 +19,7 @@ export default function Notifications() {
               className="rounded-xl border border-slate-800 bg-[#111827] p-5"
             >
               <b>{n.title}</b>
-              <p className="mt-1 text-slate-400">{n.message}</p>
+              <p className="mt-1 break-words text-slate-400">{n.message}</p>
             </div>
           ))
         ) : (

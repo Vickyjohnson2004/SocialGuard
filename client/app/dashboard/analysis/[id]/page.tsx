@@ -26,7 +26,9 @@ export default function AnalysisDetail() {
         <h3 className="mt-7 font-bold">Reasons</h3>
         <ul className="mt-2 list-disc pl-5">
           {data?.reasons?.map((x: string) => (
-            <li key={x}>{x}</li>
+            <li key={x} className="wrap-break-word">
+              {x}
+            </li>
           ))}
         </ul>
       </div>

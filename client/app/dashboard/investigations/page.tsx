@@ -30,15 +30,17 @@ export default function Investigations() {
               className="rounded-xl border border-slate-800 bg-[#111827] p-5"
             >
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <b>{x.status.replace("_", " ")}</b>
-                <span className="text-slate-400">
+                <b className="min-w-0 wrap-break-word">
+                  {x.status.replace("_", " ")}
+                </b>
+                <span className="wrap-break-word text-right text-slate-400">
                   {new Date(x.createdAt).toLocaleString()}
                 </span>
               </div>
-              <p className="mt-2 text-slate-400">
+              <p className="mt-2 wrap-break-word text-slate-400">
                 Account: {x.accountId?.platform} / @{x.accountId?.username}
               </p>
-              <p className="mt-2">
+              <p className="mt-2 wrap-break-word">
                 {x.decision || "No decision recorded yet."}
               </p>
               <div className="mt-4 flex flex-wrap gap-2">

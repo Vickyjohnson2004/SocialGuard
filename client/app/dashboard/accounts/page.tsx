@@ -38,7 +38,7 @@ export default function Accounts() {
         />
       </div>
       <div className="mt-6 overflow-x-auto rounded-2xl border border-slate-800 bg-[#111827]">
-        <table className="w-full text-left">
+        <table className="w-full min-w-[640px] text-left">
           <thead>
             <tr className="border-b border-slate-800 text-slate-400">
               <th className="p-4">Username</th>
