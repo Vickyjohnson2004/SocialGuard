@@ -3,6 +3,8 @@ import { connectDB } from "./config/db";
 import { User } from "./models/User";
 import { SocialAccount } from "./models/SocialAccount";
 import { Analysis } from "./models/Analysis";
+import { Investigation } from "./models/Investigation";
+import { Notification } from "./models/Notification";
 import { detect } from "./detection/rules";
 
 async function seed() {
@@ -10,11 +12,28 @@ async function seed() {
   await User.deleteMany({});
   await SocialAccount.deleteMany({});
   await Analysis.deleteMany({});
+  await Investigation.deleteMany({});
+  await Notification.deleteMany({});
 
   const users = await User.insertMany([
-    { name: "System Admin", email: "admin@socialguard.local", passwordHash: await bcrypt.hash("Admin123!", 12), role: "ADMIN" },
-    { name: "Research User", email: "researcher@socialguard.local", passwordHash: await bcrypt.hash("Researcher123!", 12), role: "RESEARCHER" },
-    { name: "Content Moderator", email: "moderator@socialguard.local", passwordHash: await bcrypt.hash("Moderator123!", 12), role: "MODERATOR" }
+    {
+      name: "System Admin",
+      email: "admin@socialguard.local",
+      passwordHash: await bcrypt.hash("Admin123!", 12),
+      role: "ADMIN",
+    },
+    {
+      name: "Research User",
+      email: "researcher@socialguard.local",
+      passwordHash: await bcrypt.hash("Researcher123!", 12),
+      role: "RESEARCHER",
+    },
+    {
+      name: "Content Moderator",
+      email: "moderator@socialguard.local",
+      passwordHash: await bcrypt.hash("Moderator123!", 12),
+      role: "MODERATOR",
+    },
   ]);
 
   const researcher = users[1];
@@ -38,15 +57,54 @@ async function seed() {
     activeHours: i % 5 === 0 ? 22 : 8,
     repetitiveContentScore: i % 3 === 0 ? 85 : 15,
     networkScore: i % 4 === 0 ? 75 : 20,
-    createdBy: researcher._id
+    createdBy: researcher._id,
   }));
 
+  const riskAccounts = [];
   for (const record of records) {
     const account = await SocialAccount.create(record);
-    await Analysis.create({ accountId: account._id, userId: researcher._id, ...detect(account) });
+    const result = detect(account);
+    const analysis = await Analysis.create({
+      accountId: account._id,
+      userId: researcher._id,
+      ...result,
+    });
+    if (analysis.riskScore >= 60) {
+      riskAccounts.push({ account, analysis });
+    }
   }
 
-  console.log("Seed complete.");
+  await Investigation.insertMany(
+    riskAccounts.slice(0, 5).map(({ account, analysis }) => ({
+      accountId: account._id,
+      analysisId: analysis._id,
+      createdBy: researcher._id,
+      status: analysis.riskScore >= 80 ? "OPEN" : "UNDER_REVIEW",
+      notes: [
+        {
+          text: "Seeded review: examine the account signals before making a moderation decision.",
+          authorId: researcher._id,
+          createdAt: new Date(),
+        },
+      ],
+    })),
+  );
+
+  await Notification.insertMany(
+    riskAccounts.slice(0, 8).map(({ account, analysis }) => ({
+      userId: researcher._id,
+      title: `${analysis.classification.replace("_", " ")} account detected`,
+      message: `@${account.username} on ${account.platform} has a risk score of ${analysis.riskScore}/100.`,
+      read: false,
+    })),
+  );
+
+  console.log(
+    `Seed complete: ${users.length} users, ${records.length} accounts, ${riskAccounts.length} flagged accounts.`,
+  );
   process.exit(0);
 }
-seed().catch(err => { console.error(err); process.exit(1); });
+seed().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
