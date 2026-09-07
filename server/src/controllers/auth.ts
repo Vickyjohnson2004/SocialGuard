@@ -6,11 +6,12 @@ import { signAccessToken, signRefreshToken, verifyRefresh } from "../utils/jwt";
 import { loginSchema, registerSchema } from "../validators/auth";
 import { ok } from "../utils/api";
 
-const cookieSameSite: "none" | "lax" = env.COOKIE_SECURE ? "none" : "lax";
+const secureCookies = env.COOKIE_SECURE || env.NODE_ENV === "production";
+const cookieSameSite: "none" | "lax" = secureCookies ? "none" : "lax";
 
 const cookieBase = {
   httpOnly: true,
-  secure: env.COOKIE_SECURE,
+  secure: secureCookies,
   sameSite: cookieSameSite,
   path: "/",
 };

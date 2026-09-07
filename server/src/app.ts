@@ -20,6 +20,7 @@ const allowedOrigins = new Set([
   env.CLIENT_URL,
   "http://localhost:3000",
   "http://127.0.0.1:3000",
+  "https://social-guard-client.vercel.app",
   ...(env.CORS_ORIGINS?.split(",")
     .map((origin) => origin.trim())
     .filter(Boolean) ?? []),
