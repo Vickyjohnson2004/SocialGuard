@@ -136,7 +136,7 @@ export default function Datasets() {
               ))}
             </div>
           </div>
-          <table className="mt-4 w-full min-w-[720px] text-left text-sm">
+          <table className="mt-4 w-full min-w-180 text-left text-sm">
             <thead className="border-b border-slate-700 text-slate-400">
               <tr>
                 <th className="p-3">Account</th>
