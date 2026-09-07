@@ -12,6 +12,7 @@ import investigationRoutes from "./routes/investigations";
 import notificationRoutes from "./routes/notifications";
 import datasetRoutes from "./routes/datasets";
 import { errorHandler } from "./middleware/error";
+import { connectDB } from "./config/db";
 
 export const app = express();
 
@@ -19,6 +20,14 @@ app.use(helmet());
 app.use(cors({ origin: env.CLIENT_URL, credentials: true }));
 app.use(express.json({ limit: "1mb" }));
 app.use(cookieParser());
+app.use(async (_req, _res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
 app.use(
   rateLimit({ windowMs: 15 * 60 * 1000, limit: 300, standardHeaders: true }),
 );
