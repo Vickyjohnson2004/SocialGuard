@@ -2,8 +2,14 @@ import axios from "axios";
 
 type RetryableRequestConfig = { _authRetry?: boolean };
 
+const apiBaseUrl =
+  process.env.NEXT_PUBLIC_API_URL ||
+  (process.env.NODE_ENV === "development"
+    ? "http://localhost:5000/api/v1"
+    : "");
+
 export const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1",
+  baseURL: apiBaseUrl,
   withCredentials: true,
   timeout: 15000,
 });

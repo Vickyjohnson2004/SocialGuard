@@ -40,6 +40,27 @@ npm run dev
 
 Frontend: http://localhost:3000
 
+### Production deployment
+
+Deploy the backend separately from the Next.js frontend, then set these variables in Vercel for the `client` project:
+
+```text
+NEXT_PUBLIC_API_URL=https://your-api-domain.example.com/api/v1
+```
+
+Set these variables on the backend deployment:
+
+```text
+NODE_ENV=production
+CLIENT_URL=https://your-frontend-domain.vercel.app
+COOKIE_SECURE=true
+MONGO_URI=your-mongodb-connection-string
+JWT_ACCESS_SECRET=your-long-access-secret
+JWT_REFRESH_SECRET=your-long-refresh-secret
+```
+
+`NEXT_PUBLIC_API_URL` must point to the deployed API, not `localhost`. The production cookies use `SameSite=None` and require HTTPS so login sessions work between the Vercel frontend and a separately hosted API.
+
 Development accounts created by the seed:
 
 - admin@socialguard.local / Admin123!

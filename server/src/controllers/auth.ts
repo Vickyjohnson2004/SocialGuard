@@ -9,50 +9,109 @@ import { ok } from "../utils/api";
 const cookieBase = {
   httpOnly: true,
   secure: env.COOKIE_SECURE,
-  sameSite: "lax" as const,
-  path: "/"
+  sameSite: (env.COOKIE_SECURE ? "none" : "lax") as const,
+  path: "/",
 };
 
 export async function register(req: Request, res: Response) {
   const body = registerSchema.parse(req.body);
   const exists = await User.findOne({ email: body.email.toLowerCase() });
-  if (exists) return res.status(409).json({ success: false, message: "Email already registered", errors: [] });
+  if (exists)
+    return res
+      .status(409)
+      .json({
+        success: false,
+        message: "Email already registered",
+        errors: [],
+      });
 
   const passwordHash = await bcrypt.hash(body.password, 12);
-  const user = await User.create({ name: body.name, email: body.email, passwordHash, role: "RESEARCHER" });
+  const user = await User.create({
+    name: body.name,
+    email: body.email,
+    passwordHash,
+    role: "RESEARCHER",
+  });
   const access = signAccessToken(user.id, user.role);
   const refresh = signRefreshToken(user.id, user.role);
 
   res.cookie("accessToken", access, { ...cookieBase, maxAge: 15 * 60 * 1000 });
-  res.cookie("refreshToken", refresh, { ...cookieBase, maxAge: 7 * 24 * 60 * 60 * 1000 });
-  return ok(res, { user: { id: user.id, name: user.name, email: user.email, role: user.role } }, "Registration successful", 201);
+  res.cookie("refreshToken", refresh, {
+    ...cookieBase,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
+  return ok(
+    res,
+    {
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    },
+    "Registration successful",
+    201,
+  );
 }
 
 export async function login(req: Request, res: Response) {
   const body = loginSchema.parse(req.body);
   const user = await User.findOne({ email: body.email.toLowerCase() });
   if (!user || !(await bcrypt.compare(body.password, user.passwordHash))) {
-    return res.status(401).json({ success: false, message: "Invalid email or password", errors: [] });
+    return res
+      .status(401)
+      .json({
+        success: false,
+        message: "Invalid email or password",
+        errors: [],
+      });
   }
   const access = signAccessToken(user.id, user.role);
   const refresh = signRefreshToken(user.id, user.role);
   res.cookie("accessToken", access, { ...cookieBase, maxAge: 15 * 60 * 1000 });
-  res.cookie("refreshToken", refresh, { ...cookieBase, maxAge: 7 * 24 * 60 * 60 * 1000 });
-  return ok(res, { user: { id: user.id, name: user.name, email: user.email, role: user.role } }, "Login successful");
+  res.cookie("refreshToken", refresh, {
+    ...cookieBase,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
+  return ok(
+    res,
+    {
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    },
+    "Login successful",
+  );
 }
 
 export async function refresh(req: Request, res: Response) {
   try {
     const token = req.cookies?.refreshToken;
-    if (!token) return res.status(401).json({ success: false, message: "Refresh token required", errors: [] });
+    if (!token)
+      return res
+        .status(401)
+        .json({
+          success: false,
+          message: "Refresh token required",
+          errors: [],
+        });
     const payload = verifyRefresh(token);
     const user = await User.findById(payload.sub);
     if (!user) throw new Error("not found");
     const access = signAccessToken(user.id, user.role);
-    res.cookie("accessToken", access, { ...cookieBase, maxAge: 15 * 60 * 1000 });
+    res.cookie("accessToken", access, {
+      ...cookieBase,
+      maxAge: 15 * 60 * 1000,
+    });
     return ok(res, null, "Session refreshed");
   } catch {
-    return res.status(401).json({ success: false, message: "Invalid refresh session", errors: [] });
+    return res
+      .status(401)
+      .json({ success: false, message: "Invalid refresh session", errors: [] });
   }
 }
 
@@ -63,6 +122,8 @@ export function logout(_req: Request, res: Response) {
 }
 
 export async function me(req: Request, res: Response) {
-  const user = await User.findById(req.user!.id).select("name email role verified createdAt");
+  const user = await User.findById(req.user!.id).select(
+    "name email role verified createdAt",
+  );
   return ok(res, user);
 }
