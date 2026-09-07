@@ -13,14 +13,14 @@ export default function AccountDetail() {
     queryKey: ["account-analysis", id],
     queryFn: async () => (await analysisService.list({ limit: 100 })).data.data,
   });
-  if (isLoading) return <main className="p-6">Loading...</main>;
+  if (isLoading) return <main className="page-shell">Loading...</main>;
   const analysis = analyses?.items?.find(
     (item: any) => (item.accountId?._id || item.accountId) === id,
   );
   if (!data)
-    return <main className="p-6 text-red-400">Account not found.</main>;
+    return <main className="page-shell text-red-400">Account not found.</main>;
   return (
-    <main className="p-6">
+    <main className="page-shell">
       <h1 className="text-3xl font-bold">@{data.username}</h1>
       <p className="mt-1 text-slate-400">
         {data.platform} account profile and detection evidence.

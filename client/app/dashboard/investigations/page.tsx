@@ -15,7 +15,7 @@ export default function Investigations() {
       queryClient.invalidateQueries({ queryKey: ["investigations"] }),
   });
   return (
-    <main className="p-6">
+    <main className="page-shell">
       <h1 className="text-3xl font-bold">Investigations</h1>
       <p className="mt-1 text-slate-400">
         Review flagged accounts and record the investigation status.

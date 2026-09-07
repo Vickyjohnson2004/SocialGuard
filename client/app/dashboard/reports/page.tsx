@@ -33,7 +33,7 @@ export default function Reports() {
     URL.revokeObjectURL(url);
   }
   return (
-    <main className="p-6">
+    <main className="page-shell">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold">Reports</h1>

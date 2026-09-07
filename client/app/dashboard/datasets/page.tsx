@@ -76,7 +76,7 @@ export default function Datasets() {
   }, {});
 
   return (
-    <main className="p-6">
+    <main className="page-shell">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold">Datasets</h1>
