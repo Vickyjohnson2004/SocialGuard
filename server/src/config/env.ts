@@ -8,6 +8,7 @@ const schema = z.object({
   PORT: z.coerce.number().default(5000),
   DB_URL: z.string().min(1),
   CLIENT_URL: z.string().url(),
+  CORS_ORIGINS: z.string().optional(),
   JWT_ACCESS_SECRET: z.string().min(32),
   JWT_REFRESH_SECRET: z.string().min(32),
   COOKIE_SECURE: z

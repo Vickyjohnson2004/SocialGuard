@@ -16,8 +16,28 @@ import { connectDB } from "./config/db";
 
 export const app = express();
 
+const allowedOrigins = new Set([
+  env.CLIENT_URL,
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+  ...(env.CORS_ORIGINS?.split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean) ?? []),
+]);
+
 app.use(helmet());
-app.use(cors({ origin: env.CLIENT_URL, credentials: true }));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.has(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Origin is not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  }),
+);
 app.use(express.json({ limit: "1mb" }));
 app.use(cookieParser());
 app.use(async (_req, _res, next) => {
