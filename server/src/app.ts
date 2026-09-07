@@ -41,3 +41,5 @@ app.use("/api/v1/notifications", notificationRoutes);
 app.use("/api/v1/datasets", datasetRoutes);
 
 app.use(errorHandler);
+
+export default app;
