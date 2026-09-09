@@ -31,7 +31,7 @@ export async function register(req: Request, res: Response) {
     name: body.name,
     email: body.email,
     passwordHash,
-    role: "RESEARCHER",
+    role: "USER",
   });
   const access = signAccessToken(user.id, user.role);
   const refresh = signRefreshToken(user.id, user.role);

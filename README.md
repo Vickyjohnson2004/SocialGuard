@@ -64,8 +64,7 @@ JWT_REFRESH_SECRET=your-long-refresh-secret
 Development accounts created by the seed:
 
 - admin@socialguard.local / Admin123!
-- researcher@socialguard.local / Researcher123!
-- moderator@socialguard.local / Moderator123!
+- user@socialguard.local / User123!
 
 Change these passwords immediately outside development.
 
@@ -86,8 +85,7 @@ Only analyze data you are authorized to process. Do not use this project for cre
 
 # SocialGuard
 
-#Acccounts to use to see all features
+#Accounts to use to see all features
 
 <!-- admin@socialguard.local / Admin123!
-researcher@socialguard.local / Researcher123!
-moderator@socialguard.local / Moderator123! -->
+user@socialguard.local / User123! -->

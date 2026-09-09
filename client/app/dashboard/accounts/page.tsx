@@ -37,6 +37,50 @@ export default function Accounts() {
           onChange={(e) => setQuery(e.target.value)}
         />
       </div>
+      <div className="mt-6 grid gap-4 md:grid-cols-3">
+        <div className="dashboard-card p-4 sm:p-5">
+          <p className="text-xs uppercase tracking-[0.12em] text-slate-400">
+            Tracked accounts
+          </p>
+          <p className="mt-3 text-3xl font-black text-white">
+            {data?.items?.length || 0}
+          </p>
+          <p className="mt-2 text-sm text-slate-400">
+            active imported records in this view
+          </p>
+        </div>
+        <div className="dashboard-card p-4 sm:p-5">
+          <p className="text-xs uppercase tracking-[0.12em] text-slate-400">
+            High-risk accounts
+          </p>
+          <p className="mt-3 text-3xl font-black text-[#F4A91C]">
+            {
+              (analysisData?.items || []).filter(
+                (item: any) => item.riskScore >= 60,
+              ).length
+            }
+          </p>
+          <p className="mt-2 text-sm text-slate-400">
+            flagged for immediate review
+          </p>
+        </div>
+        <div className="dashboard-card p-4 sm:p-5">
+          <p className="text-xs uppercase tracking-[0.12em] text-slate-400">
+            Average score
+          </p>
+          <p className="mt-3 text-3xl font-black text-emerald-400">
+            {Math.round(
+              (analysisData?.items || []).reduce(
+                (sum: number, item: any) => sum + (item.riskScore || 0),
+                0,
+              ) / (analysisData?.items?.length || 1),
+            )}
+          </p>
+          <p className="mt-2 text-sm text-slate-400">
+            mean risk across account reviews
+          </p>
+        </div>
+      </div>
       <div className="mt-6 overflow-x-auto rounded-2xl border border-slate-800 bg-[#111827]">
         <table className="w-full min-w-[640px] text-left">
           <thead>

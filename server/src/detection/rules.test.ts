@@ -54,4 +54,24 @@ describe("rule detector", () => {
     expect(report.report.riskScore).toBeGreaterThanOrEqual(0);
     expect(report.report.riskScore).toBeLessThanOrEqual(100);
   });
+
+  it("uses different risk baselines for different real social profiles", () => {
+    const xReport = buildUrlDetectionReport(
+      parseSocialAccountUrl("https://x.com/elonmusk")!,
+    );
+    const githubReport = buildUrlDetectionReport(
+      parseSocialAccountUrl("https://github.com/octocat")!,
+    );
+    const threadsReport = buildUrlDetectionReport(
+      parseSocialAccountUrl("https://threads.net/@dailyhustle")!,
+    );
+
+    const scores = [
+      xReport.report.riskScore,
+      githubReport.report.riskScore,
+      threadsReport.report.riskScore,
+    ];
+    expect(new Set(scores).size).toBeGreaterThan(1);
+    expect(scores.every((score) => score >= 0 && score <= 100)).toBe(true);
+  });
 });

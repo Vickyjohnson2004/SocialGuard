@@ -49,9 +49,41 @@ export default function Reports() {
           Download CSV
         </button>
       </div>
-      <div className="mt-6 rounded-2xl border border-slate-800 bg-[#111827] p-6">
-        <p className="text-4xl font-black text-[#F4A91C]">{data?.total || 0}</p>
-        <p className="mt-2 text-slate-400">analysis records ready for export</p>
+      <div className="mt-6 grid gap-4 md:grid-cols-3">
+        <div className="dashboard-card p-4 sm:p-5">
+          <p className="text-xs uppercase tracking-[0.12em] text-slate-400">
+            Records ready
+          </p>
+          <p className="mt-3 text-3xl font-black text-[#F4A91C]">
+            {data?.total || 0}
+          </p>
+          <p className="mt-2 text-sm text-slate-400">
+            analysis records ready for export
+          </p>
+        </div>
+        <div className="dashboard-card p-4 sm:p-5">
+          <p className="text-xs uppercase tracking-[0.12em] text-slate-400">
+            Top risk
+          </p>
+          <p className="mt-3 text-3xl font-black text-white">
+            {Math.max(
+              ...(data?.items || []).map((item: any) => item.riskScore || 0),
+              0,
+            )}
+          </p>
+          <p className="mt-2 text-sm text-slate-400">
+            maximum score in the active dataset
+          </p>
+        </div>
+        <div className="dashboard-card p-4 sm:p-5">
+          <p className="text-xs uppercase tracking-[0.12em] text-slate-400">
+            Export format
+          </p>
+          <p className="mt-3 text-3xl font-black text-emerald-400">CSV</p>
+          <p className="mt-2 text-sm text-slate-400">
+            clean, review-ready analysis snapshots
+          </p>
+        </div>
       </div>
     </main>
   );

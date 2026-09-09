@@ -23,20 +23,14 @@ async function seed() {
       role: "ADMIN",
     },
     {
-      name: "Research User",
-      email: "researcher@socialguard.local",
-      passwordHash: await bcrypt.hash("Researcher123!", 12),
-      role: "RESEARCHER",
-    },
-    {
-      name: "Content Moderator",
-      email: "moderator@socialguard.local",
-      passwordHash: await bcrypt.hash("Moderator123!", 12),
-      role: "MODERATOR",
+      name: "Random User",
+      email: "user@socialguard.local",
+      passwordHash: await bcrypt.hash("User123!", 12),
+      role: "USER",
     },
   ]);
 
-  const researcher = users[1];
+  const userAccount = users[1];
   const records = Array.from({ length: 25 }, (_, i) => ({
     platform: ["X", "Instagram", "Facebook", "TikTok"][i % 4],
     username: `synthetic_user_${i + 1}`,
@@ -57,7 +51,7 @@ async function seed() {
     activeHours: i % 5 === 0 ? 22 : 8,
     repetitiveContentScore: i % 3 === 0 ? 85 : 15,
     networkScore: i % 4 === 0 ? 75 : 20,
-    createdBy: researcher._id,
+    createdBy: userAccount._id,
   }));
 
   const riskAccounts = [];
@@ -66,7 +60,7 @@ async function seed() {
     const result = detect(account);
     const analysis = await Analysis.create({
       accountId: account._id,
-      userId: researcher._id,
+      userId: userAccount._id,
       ...result,
     });
     if (analysis.riskScore >= 60) {
@@ -78,12 +72,12 @@ async function seed() {
     riskAccounts.slice(0, 5).map(({ account, analysis }) => ({
       accountId: account._id,
       analysisId: analysis._id,
-      createdBy: researcher._id,
+      createdBy: userAccount._id,
       status: analysis.riskScore >= 80 ? "OPEN" : "UNDER_REVIEW",
       notes: [
         {
           text: "Seeded review: examine the account signals before making a moderation decision.",
-          authorId: researcher._id,
+          authorId: userAccount._id,
           createdAt: new Date(),
         },
       ],
@@ -92,7 +86,7 @@ async function seed() {
 
   await Notification.insertMany(
     riskAccounts.slice(0, 8).map(({ account, analysis }) => ({
-      userId: researcher._id,
+      userId: userAccount._id,
       title: `${analysis.classification.replace("_", " ")} account detected`,
       message: `@${account.username} on ${account.platform} has a risk score of ${analysis.riskScore}/100.`,
       read: false,

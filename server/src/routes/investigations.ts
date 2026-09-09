@@ -1,10 +1,14 @@
 import { Router } from "express";
 import { auth, roles } from "../middleware/auth";
-import { listInvestigations, createInvestigation, updateInvestigation } from "../controllers/investigations";
+import {
+  listInvestigations,
+  createInvestigation,
+  updateInvestigation,
+} from "../controllers/investigations";
 
 const router = Router();
 router.use(auth);
 router.get("/", listInvestigations);
 router.post("/", createInvestigation);
-router.patch("/:id", roles("ADMIN", "MODERATOR", "RESEARCHER"), updateInvestigation);
+router.patch("/:id", roles("ADMIN", "USER"), updateInvestigation);
 export default router;

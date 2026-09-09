@@ -6,8 +6,8 @@ import { authService } from "@/services/auth";
 
 export default function Login() {
   const router = useRouter();
-  const [email, setEmail] = useState("researcher@socialguard.local");
-  const [password, setPassword] = useState("Researcher123!");
+  const [email, setEmail] = useState("user@socialguard.local");
+  const [password, setPassword] = useState("User123!");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);

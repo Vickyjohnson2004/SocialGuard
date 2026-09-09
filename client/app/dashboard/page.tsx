@@ -72,6 +72,44 @@ export default function Dashboard() {
         <StatCard label="High Risk" value={count("HIGH_RISK")} accent />
         <StatCard label="Likely Bots" value={count("LIKELY_BOT")} accent />
       </div>
+      <div className="mt-6 grid gap-4 md:grid-cols-3">
+        <div className="dashboard-card p-4 sm:p-5">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">
+            Priority queue
+          </p>
+          <p className="mt-3 text-3xl font-black text-[#F4A91C]">
+            {count("HIGH_RISK") + count("LIKELY_BOT")}
+          </p>
+          <p className="mt-2 text-sm text-slate-400">
+            Accounts flagged for follow-up review.
+          </p>
+        </div>
+        <div className="dashboard-card p-4 sm:p-5">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">
+            Review coverage
+          </p>
+          <p className="mt-3 text-3xl font-black text-white">
+            {total
+              ? Math.round(
+                  ((count("GENUINE") + count("SUSPICIOUS")) / total) * 100,
+                )
+              : 0}
+            %
+          </p>
+          <p className="mt-2 text-sm text-slate-400">
+            Share of accounts under normal monitoring.
+          </p>
+        </div>
+        <div className="dashboard-card p-4 sm:p-5">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">
+            Operational status
+          </p>
+          <p className="mt-3 text-3xl font-black text-emerald-400">Stable</p>
+          <p className="mt-2 text-sm text-slate-400">
+            Detection pipeline is processing live signals.
+          </p>
+        </div>
+      </div>
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <div className="dashboard-card min-w-0 p-4 sm:p-5">
           <div className="flex items-center justify-between gap-3">
