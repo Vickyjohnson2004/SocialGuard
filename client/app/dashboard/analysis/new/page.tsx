@@ -28,10 +28,57 @@ const initial = {
 export default function NewAnalysis() {
   const [form, setForm] = useState<any>(initial);
   const [busy, setBusy] = useState(false);
+  const [detectingUrl, setDetectingUrl] = useState(false);
   const [error, setError] = useState("");
+  const [urlInput, setUrlInput] = useState("");
+  const [urlStatus, setUrlStatus] = useState("");
+  const [detectedReport, setDetectedReport] = useState<any>(null);
   const [result, setResult] = useState<any>(null);
   const router = useRouter();
+
   const set = (k: string, v: any) => setForm((x: any) => ({ ...x, [k]: v }));
+
+  async function detectFromUrl() {
+    const trimmed = urlInput.trim();
+    if (!trimmed) {
+      setUrlStatus("Please enter a social profile URL first.");
+      return;
+    }
+
+    setDetectingUrl(true);
+    setError("");
+    setUrlStatus("");
+
+    try {
+      const response = await analysisService.detectUrl(trimmed);
+      const detected = response.data?.data;
+      const profile = detected?.suggestedProfile ?? {};
+      const account = detected?.detected ?? {};
+      const report = detected?.report ?? null;
+
+      setForm((current: any) => ({
+        ...current,
+        platform: account.platform || current.platform,
+        username: account.username || current.username,
+        ...profile,
+      }));
+
+      setDetectedReport(report);
+      setUrlStatus(
+        report
+          ? `Detected ${account.platform || "social"} profile: @${account.username || "unknown"} (${report.classification} • ${report.riskScore}/100)`
+          : `Detected ${account.platform || "social"} profile: @${account.username || "unknown"}`,
+      );
+    } catch (err: any) {
+      setUrlStatus(
+        err?.response?.data?.message ||
+          "That URL could not be matched to a supported profile.",
+      );
+    } finally {
+      setDetectingUrl(false);
+    }
+  }
+
   async function submit(e: FormEvent) {
     e.preventDefault();
     setBusy(true);
@@ -45,6 +92,7 @@ export default function NewAnalysis() {
       setBusy(false);
     }
   }
+
   const numeric = [
     "followers",
     "following",
@@ -60,10 +108,68 @@ export default function NewAnalysis() {
     "repetitiveContentScore",
     "networkScore",
   ];
+
   return (
     <main className="page-shell">
       <h1 className="text-3xl font-bold">New Account Analysis</h1>
-      <p className="mt-1 text-slate-400">Enter authorized account metadata.</p>
+      <p className="mt-1 text-slate-400">
+        Enter authorized account metadata or paste a social profile URL.
+      </p>
+
+      <div className="mt-6 max-w-5xl rounded-2xl border border-slate-800 bg-[#111827] p-4 sm:p-5">
+        <label className="block text-sm font-medium text-slate-300">
+          Profile URL
+        </label>
+        <div className="mt-2 flex flex-col gap-3 sm:flex-row">
+          <input
+            className="field"
+            placeholder="https://x.com/username or https://instagram.com/@handle"
+            value={urlInput}
+            onChange={(e) => setUrlInput(e.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                event.preventDefault();
+                void detectFromUrl();
+              }
+            }}
+          />
+          <button
+            type="button"
+            onClick={() => void detectFromUrl()}
+            disabled={detectingUrl}
+            className="rounded-xl border border-[#F4A91C]/50 bg-[#F4A91C]/10 px-4 py-3 font-bold text-[#F4A91C] disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {detectingUrl ? "Detecting..." : "Detect account"}
+          </button>
+        </div>
+        {urlStatus && (
+          <p className="mt-3 text-sm text-slate-300">{urlStatus}</p>
+        )}
+      </div>
+
+      {detectedReport && (
+        <section className="mt-6 max-w-5xl rounded-2xl border border-[#F4A91C]/40 bg-[#111827] p-5 sm:p-6">
+          <p className="text-sm text-slate-400">Detected account report</p>
+          <div className="mt-3 flex flex-wrap items-end gap-4">
+            <strong className="text-5xl font-black text-[#F4A91C]">
+              {detectedReport.riskScore}
+              <span className="text-2xl">/100</span>
+            </strong>
+            <span className="text-xl font-bold">
+              {detectedReport.classification}
+            </span>
+            <span className="text-slate-400">
+              Confidence: {detectedReport.confidence}%
+            </span>
+          </div>
+          <ul className="mt-4 list-disc pl-5 text-slate-300">
+            {detectedReport.reasons.map((reason: string) => (
+              <li key={reason}>{reason}</li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       <form
         onSubmit={submit}
         className="mt-7 grid max-w-5xl gap-4 rounded-2xl border border-slate-800 bg-[#111827] p-4 sm:p-6 md:grid-cols-2"

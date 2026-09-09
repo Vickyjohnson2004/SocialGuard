@@ -7,15 +7,34 @@
   --muted: #94a3b8;
 }
 
+html {
+  background: var(--bg);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  color-scheme: dark;
+}
+
 * {
   box-sizing: border-box;
 }
+
+html,
+body {
+  min-height: 100%;
+  width: 100%;
+}
+
 body {
   margin: 0;
   background: var(--bg);
   color: #f8fafc;
   font-family: "Avenir Next", "Trebuchet MS", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overscroll-behavior-y: none;
+  touch-action: manipulation;
 }
+
 button,
 input,
 select {
@@ -30,12 +49,14 @@ select {
   padding: 0.75rem;
   color: #f8fafc;
 }
+
 .page-shell {
   margin: 0 auto;
   width: 100%;
   max-width: 1500px;
-  padding: 1.25rem;
+  padding: 1rem;
 }
+
 .dashboard-card {
   border: 1px solid rgb(148 163 184 / 0.14);
   border-radius: 1rem;
@@ -45,16 +66,20 @@ select {
     rgb(15 23 42 / 0.82)
   );
 }
+
 .dashboard-card:hover {
   border-color: rgb(244 169 28 / 0.32);
 }
+
 .dashboard-heading {
   letter-spacing: -0.03em;
 }
+
 .dashboard-scroll {
   scrollbar-width: thin;
   scrollbar-color: #334155 transparent;
 }
+
 .loading-panel,
 .status-panel {
   border: 1px solid #1e293b;
@@ -62,9 +87,11 @@ select {
   background: #111827;
   padding: 2rem;
 }
+
 .status-error {
   border-color: rgb(239 68 68 / 0.35);
 }
+
 @media (min-width: 640px) {
   .page-shell {
     padding: 1.5rem 2rem;

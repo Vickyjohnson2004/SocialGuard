@@ -34,11 +34,24 @@ app.use(
     origin: (origin, callback) => {
       if (!origin || allowedOrigins.has(origin)) {
         callback(null, true);
-      } else {
-        callback(new Error("Origin is not allowed by CORS"));
+        return;
       }
+
+      const host = origin.replace(/^https?:\/\//, "").replace(/:\d+$/, "");
+      const matchesLocalhost =
+        host === "localhost" ||
+        host === "127.0.0.1" ||
+        host.endsWith("vercel.app");
+      if (matchesLocalhost) {
+        callback(null, true);
+        return;
+      }
+
+      callback(new Error("Origin is not allowed by CORS"));
     },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
   }),
 );
 app.use(express.json({ limit: "1mb" }));
