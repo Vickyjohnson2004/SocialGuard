@@ -6,6 +6,7 @@ import { Analysis } from "./models/Analysis";
 import { Investigation } from "./models/Investigation";
 import { Notification } from "./models/Notification";
 import { detect } from "./detection/rules";
+import { ensureDemoUsers } from "./config/bootstrap";
 
 async function seed() {
   await connectDB();
@@ -15,20 +16,11 @@ async function seed() {
   await Investigation.deleteMany({});
   await Notification.deleteMany({});
 
-  const users = await User.insertMany([
-    {
-      name: "System Admin",
-      email: "admin@socialguard.local",
-      passwordHash: await bcrypt.hash("Admin123!", 12),
-      role: "ADMIN",
-    },
-    {
-      name: "Random User",
-      email: "user@socialguard.local",
-      passwordHash: await bcrypt.hash("User123!", 12),
-      role: "USER",
-    },
-  ]);
+  await ensureDemoUsers();
+
+  const users = await User.find({
+    email: { $in: ["admin@socialguard.local", "user@socialguard.local"] },
+  }).sort({ role: 1 });
 
   const userAccount = users[1];
   const records = Array.from({ length: 25 }, (_, i) => ({
