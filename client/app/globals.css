@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* =========================================================
+   SocialGuard AI - Global Styles
+   iOS / Safari friendly
+   ========================================================= */
+
 :root {
   --bg: #0b1020;
   --card: #111827;
@@ -7,55 +12,206 @@
   --muted: #94a3b8;
 }
 
+/* =========================================================
+   Base HTML
+   ========================================================= */
+
 html {
   background: var(--bg);
+  color-scheme: dark;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  color-scheme: dark;
+  scroll-behavior: smooth;
 }
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
+/* =========================================================
+   Body
+   ========================================================= */
+
 html,
 body {
-  min-height: 100%;
   width: 100%;
+  min-height: 100%;
 }
 
 body {
   margin: 0;
   background: var(--bg);
   color: #f8fafc;
-  font-family: "Avenir Next", "Trebuchet MS", sans-serif;
+  font-family:
+    "Avenir Next",
+    "Trebuchet MS",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  overscroll-behavior-y: none;
-  touch-action: manipulation;
 }
+
+/* =========================================================
+   Media
+   ========================================================= */
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+img,
+video {
+  height: auto;
+}
+
+/* =========================================================
+   Forms
+   ========================================================= */
 
 button,
 input,
+textarea,
 select {
   font: inherit;
 }
 
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+input,
+textarea,
+select {
+  max-width: 100%;
+}
+
+/* Prevent iOS Safari from automatically zooming inputs
+   when the font size is below 16px. */
+
+input,
+textarea,
+select {
+  font-size: 16px;
+}
+
+/* =========================================================
+   Links
+   ========================================================= */
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* =========================================================
+   Selection
+   ========================================================= */
+
+::selection {
+  background: rgb(244 169 28 / 0.25);
+  color: #ffffff;
+}
+
+/* =========================================================
+   Scrollbar
+   ========================================================= */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #334155 transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* =========================================================
+   Form Field
+   ========================================================= */
+
 .field {
   width: 100%;
   border: 1px solid #334155;
-  background: #0f172a;
   border-radius: 8px;
   padding: 0.75rem;
+  background: #0f172a;
   color: #f8fafc;
+  outline: none;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    background-color 150ms ease;
 }
 
+.field::placeholder {
+  color: #64748b;
+}
+
+.field:focus {
+  border-color: rgb(244 169 28 / 0.65);
+  box-shadow: 0 0 0 3px rgb(244 169 28 / 0.1);
+}
+
+.field:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* =========================================================
+   Page Shell
+   ========================================================= */
+
 .page-shell {
-  margin: 0 auto;
   width: 100%;
   max-width: 1500px;
+  margin: 0 auto;
   padding: 1rem;
 }
+
+@media (min-width: 640px) {
+  .page-shell {
+    padding: 1.5rem 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .page-shell {
+    padding: 2rem 2.5rem;
+  }
+}
+
+/* =========================================================
+   Dashboard Cards
+   ========================================================= */
 
 .dashboard-card {
   border: 1px solid rgb(148 163 184 / 0.14);
@@ -75,10 +231,32 @@ select {
   letter-spacing: -0.03em;
 }
 
+/* =========================================================
+   Dashboard Scroll Container
+   ========================================================= */
+
 .dashboard-scroll {
   scrollbar-width: thin;
   scrollbar-color: #334155 transparent;
 }
+
+.dashboard-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.dashboard-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dashboard-scroll::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 999px;
+}
+
+/* =========================================================
+   Loading / Status Panels
+   ========================================================= */
 
 .loading-panel,
 .status-panel {
@@ -92,32 +270,90 @@ select {
   border-color: rgb(239 68 68 / 0.35);
 }
 
-@media (min-width: 640px) {
-  .page-shell {
-    padding: 1.5rem 2rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .page-shell {
-    padding: 2rem 2.5rem;
-  }
-}
+/* =========================================================
+   Homepage Grid
+   ========================================================= */
 
 .home-grid {
+  position: absolute;
+  inset: 0;
+
   background-image:
     linear-gradient(rgb(148 163 184 / 0.06) 1px, transparent 1px),
     linear-gradient(90deg, rgb(148 163 184 / 0.06) 1px, transparent 1px);
+
   background-size: 42px 42px;
-  mask-image: linear-gradient(to bottom, black 0%, transparent 78%);
+
+  /* Safari-friendly fade without mask-image */
+  opacity: 0.75;
+
+  pointer-events: none;
 }
+
+/* =========================================================
+   Homepage Panels
+   ========================================================= */
 
 .home-panel {
   border: 1px solid rgb(148 163 184 / 0.16);
+  border-radius: 1rem;
+
   background: linear-gradient(
     145deg,
     rgb(17 24 39 / 0.96),
     rgb(15 23 42 / 0.75)
   );
+
   box-shadow: 0 24px 70px rgb(0 0 0 / 0.2);
+}
+
+/* =========================================================
+   Safe Area Support for iPhone
+   ========================================================= */
+
+@supports (padding: env(safe-area-inset-top)) {
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+  }
+}
+
+/* =========================================================
+   Mobile Improvements
+   ========================================================= */
+
+@media (max-width: 639px) {
+  html {
+    overflow-x: hidden;
+  }
+
+  body {
+    overflow-x: hidden;
+  }
+
+  .page-shell {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* =========================================================
+   Reduced Motion
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
